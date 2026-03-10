@@ -1,5 +1,12 @@
 const BASE_URL = 'https://senior-project-website-add-optimizer.onrender.com';
 
+function getPageName() {
+  const path = window.location.pathname;
+  if (path.includes('product')) return '/product';
+  if (path.includes('cart')) return '/cart';
+  return '/home';
+}
+
 async function initSession() {
   if (localStorage.getItem('session_id')) return;
   const res = await fetch(BASE_URL + '/visitor-sessions', {
@@ -20,7 +27,7 @@ async function trackPageview() {
     body: JSON.stringify({
       session_id: parseInt(localStorage.getItem('session_id')),
       type: 'pageview',
-      page: window.location.pathname
+      page: getPageName()
     })
   });
 }
@@ -34,7 +41,7 @@ function trackClick(element) {
       session_id: parseInt(localStorage.getItem('session_id')),
       type: 'click',
       element: element,
-      page: window.location.pathname
+      page: getPageName()
     })
   }).catch(() => {});
 }
