@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | ElectroLite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-900">
+  <div class="min-h-screen">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <a href="index.html" class="text-2xl font-semibold tracking-tight">ElectroLite</a>
+        <nav class="flex items-center gap-6 text-sm font-medium text-slate-600">
+          <a href="index.html">Shop</a>
+          <a href="cart.html" class="text-slate-900">Cart</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-6 py-12">
+      <section class="grid gap-8 lg:grid-cols-[2fr_1fr]">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="mb-6 flex items-center justify-between">
+            <h1 class="text-3xl font-semibold tracking-tight">Your Cart</h1>
+            <a href="index.html" class="text-sm font-medium text-slate-600 hover:text-slate-900">Continue shopping</a>
+          </div>
+          <div id="cart-items" class="space-y-4"></div>
+        </div>
+
+        <aside class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Summary</p>
+          <div class="mb-4 flex items-center justify-between text-sm text-slate-600">
+            <span>Items</span>
+            <span id="item-count">0</span>
+          </div>
+          <div class="mb-8 flex items-center justify-between text-xl font-semibold">
+            <span>Total</span>
+            <span id="cart-total">$0.00</span>
+          </div>
+          <button
+            id="checkout-button"
+            data-track="checkout-click"
+            class="w-full rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
+          >
+            Checkout
+          </button>
+          <p id="checkout-message" class="mt-4 text-sm font-medium text-emerald-700"></p>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function getCart() {
+      return JSON.parse(localStorage.getItem('cart') || '[]');
+    }
+
+    function setCart(cart) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function removeFromCart(id) {
+      const updatedCart = getCart().filter(item => item.id !== id);
+      setCart(updatedCart);
+      renderCart();
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      const itemsContainer = document.getElementById('cart-items');
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+      document.getElementById('item-count').textContent = String(count);
+      document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+
+      if (!cart.length) {
+        itemsContainer.innerHTML = `
+          <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+            <p class="mb-3 text-lg font-medium">Your cart is empty.</p>
+            <a href="index.html" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white">Browse products</a>
+          </div>
+        `;
+        return;
+      }
+
+      itemsContainer.innerHTML = cart.map(item => `
+        <article class="flex flex-col gap-4 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center">
+          <img src="${item.image}" alt="${item.name}" class="h-24 w-full rounded-2xl object-cover sm:w-36">
+          <div class="flex-1">
+            <h2 class="text-lg font-semibold">${item.name}</h2>
+            <p class="text-sm text-slate-600">Quantity: ${item.quantity}</p>
+            <p class="mt-2 text-sm font-medium text-slate-800">$${item.price.toFixed(2)} each</p>
+          </div>
+          <div class="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
+            <span class="text-lg font-semibold">$${(item.price * item.quantity).toFixed(2)}</span>
+            <button
+              type="button"
+              class="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-red-300 hover:text-red-600"
+              onclick="removeFromCart(${item.id})"
+            >
+              Remove
+            </button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('checkout-button').addEventListener('click', () => {
+      const cart = getCart();
+      const message = document.getElementById('checkout-message');
+
+      if (!cart.length) {
+        message.textContent = 'Add items to your cart before checking out.';
+        return;
+      }
+
+      localStorage.removeItem('cart');
+      renderCart();
+      message.textContent = 'Checkout complete for this demo store.';
+    });
+
+    renderCart();
+  </script>
+  <script src="tracker.js"></script>
+  <script>initSession().then(trackPageview)</script>
+</body>
+</html>

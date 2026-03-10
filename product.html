@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Detail | ElectroLite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-900">
+  <div class="min-h-screen">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <a href="index.html" class="text-2xl font-semibold tracking-tight">ElectroLite</a>
+        <nav class="flex items-center gap-6 text-sm font-medium text-slate-600">
+          <a href="index.html">Shop</a>
+          <a href="cart.html" class="rounded-full bg-slate-900 px-4 py-2 text-white" data-track="nav-cart">Cart</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-6 py-12">
+      <div class="mb-8">
+        <a href="index.html" class="text-sm font-medium text-slate-600 hover:text-slate-900">&larr; Back to products</a>
+      </div>
+      <section id="product-detail"></section>
+    </main>
+  </div>
+
+  <script>
+    const products = [
+      { id: 1, name: 'Wireless Headphones', price: 79.99, image: 'https://picsum.photos/300/200?random=1', description: 'Crisp wireless audio with a lightweight fit and long battery life for all-day listening.' },
+      { id: 2, name: 'Mechanical Keyboard', price: 129.99, image: 'https://picsum.photos/300/200?random=2', description: 'Tactile switches, compact layout, and a durable frame built for focused work sessions.' },
+      { id: 3, name: 'USB-C Hub', price: 49.99, image: 'https://picsum.photos/300/200?random=3', description: 'Expand a single port into a streamlined hub for displays, storage, and fast charging.' },
+      { id: 4, name: 'Webcam HD', price: 89.99, image: 'https://picsum.photos/300/200?random=4', description: 'Sharp video, easy clip-on mounting, and clear image quality for meetings and streaming.' },
+      { id: 5, name: 'LED Desk Lamp', price: 39.99, image: 'https://picsum.photos/300/200?random=5', description: 'Adjustable brightness with a compact footprint that fits neatly on any desk.' },
+      { id: 6, name: 'Phone Stand', price: 19.99, image: 'https://picsum.photos/300/200?random=6', description: 'Stable aluminum support for hands-free calls, videos, or a cleaner charging setup.' }
+    ];
+
+    function getCart() {
+      return JSON.parse(localStorage.getItem('cart') || '[]');
+    }
+
+    function setCart(cart) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'), 10);
+    const product = products.find(item => item.id === id);
+    const detail = document.getElementById('product-detail');
+
+    if (!product) {
+      detail.innerHTML = `
+        <div class="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+          <h1 class="mb-3 text-3xl font-semibold">Product not found</h1>
+          <p class="mb-6 text-slate-600">The requested item does not exist in this demo catalog.</p>
+          <a href="index.html" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white">Return to shop</a>
+        </div>
+      `;
+    } else {
+      detail.innerHTML = `
+        <div class="grid gap-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm lg:grid-cols-2">
+          <img src="${product.image}" alt="${product.name}" class="h-full min-h-[320px] w-full object-cover">
+          <div class="flex flex-col justify-center p-8 lg:p-10">
+            <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Product Detail</p>
+            <h1 class="mb-4 text-4xl font-semibold tracking-tight">${product.name}</h1>
+            <p class="mb-6 text-base leading-7 text-slate-600">${product.description}</p>
+            <div class="mb-8 flex items-center gap-4">
+              <span class="text-3xl font-semibold">$${product.price.toFixed(2)}</span>
+              <span class="rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">In stock</span>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button
+                id="add-to-cart"
+                data-track="add-to-cart-${product.id}"
+                class="rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
+              >
+                Add to Cart
+              </button>
+              <a href="cart.html" class="rounded-full border border-slate-300 px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900">
+                View Cart
+              </a>
+            </div>
+            <p id="feedback" class="mt-4 text-sm font-medium text-emerald-700"></p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('add-to-cart').addEventListener('click', () => {
+        const cart = getCart();
+        const existing = cart.find(item => item.id === product.id);
+
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, quantity: 1 });
+        }
+
+        setCart(cart);
+        document.getElementById('feedback').textContent = `${product.name} added to cart.`;
+      });
+    }
+  </script>
+  <script src="tracker.js"></script>
+  <script>initSession().then(trackPageview)</script>
+</body>
+</html>
