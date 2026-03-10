@@ -5,6 +5,7 @@ async function initSession() {
   const res = await fetch(BASE_URL + '/visitor-sessions', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
+    credentials: 'omit',
     body: JSON.stringify({user_agent: navigator.userAgent, referrer: document.referrer})
   });
   const data = await res.json();
@@ -15,6 +16,7 @@ async function trackPageview() {
   await fetch(BASE_URL + '/events/track', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
+    credentials: 'omit',
     body: JSON.stringify({
       session_id: parseInt(localStorage.getItem('session_id')),
       type: 'pageview',
@@ -24,16 +26,17 @@ async function trackPageview() {
 }
 
 function trackClick(element) {
-  const payload = JSON.stringify({
-    session_id: parseInt(localStorage.getItem('session_id')),
-    type: 'click',
-    element: element,
-    page: window.location.pathname
-  });
-  navigator.sendBeacon(
-    BASE_URL + '/events/track',
-    new Blob([payload], {type: 'application/json'})
-  );
+  fetch(BASE_URL + '/events/track', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    credentials: 'omit',
+    body: JSON.stringify({
+      session_id: parseInt(localStorage.getItem('session_id')),
+      type: 'click',
+      element: element,
+      page: window.location.pathname
+    })
+  }).catch(() => {});
 }
 
 document.addEventListener('click', e => {
