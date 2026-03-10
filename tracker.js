@@ -2,9 +2,9 @@ const BASE_URL = 'https://senior-project-website-add-optimizer.onrender.com';
 
 function getPageName() {
   const path = window.location.pathname;
-  if (path.includes('product')) return '/product';
-  if (path.includes('cart')) return '/cart';
-  return '/home';
+  if (path.includes('product')) return 'product';
+  if (path.includes('cart')) return 'cart';
+  return 'home';
 }
 
 async function initSession() {
