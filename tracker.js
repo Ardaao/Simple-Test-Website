@@ -4,6 +4,7 @@ function getPageName() {
   const path = window.location.pathname;
   if (path.includes('product')) return 'product';
   if (path.includes('cart')) return 'cart';
+  if (path.includes('clothes')) return 'clothes';
   return 'home';
 }
 
