@@ -5,6 +5,7 @@ function getPageName() {
   if (path.includes('product')) return 'product';
   if (path.includes('cart')) return 'cart';
   if (path.includes('clothes')) return 'clothes';
+  if (path.includes('cosmetics')) return 'cosmetics';
   return 'home';
 }
 
