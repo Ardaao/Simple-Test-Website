@@ -23,9 +23,9 @@
       <section class="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Featured Categories</p>
-          <h1 class="text-4xl font-semibold tracking-tight">Electronics and clothing in one simple demo store.</h1>
+          <h1 class="text-4xl font-semibold tracking-tight">Electronics , clothing and cosmetics in one simple demo store.</h1>
         </div>
-        <p class="max-w-xl text-sm leading-6 text-slate-600">A minimal demo storefront with six everyday electronics, localStorage cart state, and page/click tracking.</p>
+        <p class="max-w-xl text-sm leading-6 text-slate-600">A minimal demo store to test and page/click tracking.</p>
       </section>
       
       <section class="mb-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -86,12 +86,14 @@
 
   <script>
     const products = [
-      { id: 1, name: 'Wireless Headphones', price: 79.99, image: 'https://picsum.photos/300/200?random=1' },
-      { id: 2, name: 'Mechanical Keyboard', price: 129.99, image: 'https://picsum.photos/300/200?random=2' },
-      { id: 3, name: 'USB-C Hub', price: 49.99, image: 'https://picsum.photos/300/200?random=3' },
-      { id: 4, name: 'Webcam HD', price: 89.99, image: 'https://picsum.photos/300/200?random=4' },
-      { id: 5, name: 'LED Desk Lamp', price: 39.99, image: 'https://picsum.photos/300/200?random=5' },
-      { id: 6, name: 'Phone Stand', price: 19.99, image: 'https://picsum.photos/300/200?random=6' }
+      { id: 1, name: 'Wireless Headphones', price: 79.99, image: 'https://picsum.photos/300/200?random=1', category: 'electronics' },
+      { id: 2, name: 'Mechanical Keyboard', price: 129.99, image: 'https://picsum.photos/300/200?random=2', category: 'electronics' },
+
+      { id: 3, name: 'Essential T-Shirt', price: 24.99, image: 'https://picsum.photos/300/200?random=11', category: 'clothing' },
+      { id: 4, name: 'Classic Hoodie', price: 59.99, image: 'https://picsum.photos/300/200?random=12', category: 'clothing' },
+
+      { id: 5, name: 'Hydrating Face Cream', price: 29.99, image: 'https://picsum.photos/300/200?random=21', category: 'cosmetics' },
+      { id: 6, name: 'Soft Matte Lipstick', price: 18.99, image: 'https://picsum.photos/300/200?random=22', category: 'cosmetics' }
     ];
 
     const grid = document.getElementById('product-grid');
@@ -100,13 +102,25 @@
       grid.innerHTML = products.map(product => `
         <article class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
           <img src="${product.image}" alt="${product.name}" class="h-52 w-full object-cover">
+
           <div class="space-y-4 p-6">
             <div class="space-y-2">
+
+              <p class="text-xs uppercase tracking-wider text-slate-400">
+                ${product.category}
+              </p>
+
               <h2 class="text-xl font-semibold">${product.name}</h2>
-              <p class="text-sm leading-6 text-slate-600">Clean design, reliable everyday performance, and a simple setup for home or office.</p>
+
+              <p class="text-sm leading-6 text-slate-600">
+                Clean design, reliable everyday performance, and a simple setup for home or office.
+              </p>
+
             </div>
+
             <div class="flex items-center justify-between">
               <span class="text-lg font-semibold">$${product.price.toFixed(2)}</span>
+
               <a
                 href="product.html?id=${product.id}"
                 data-track="product-click-${product.id}"
@@ -114,6 +128,7 @@
               >
                 View Product
               </a>
+
             </div>
           </div>
         </article>
